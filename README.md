@@ -1,14 +1,14 @@
-# Super Whisper Clone
+# Whisper Voice-to-Text (Local)
 
-This application is a cross-platform desktop tool that allows you to record your voice using a global hotkey and have the transcribed text pasted into your active window.
+This application is a cross-platform desktop tool that lets you record your voice using a global hotkey and paste the transcribed text into your active window.
 
 ## Features
 
 -   **Global Hotkey:** Start and stop recording from anywhere in your OS.
 -   **Local Transcription:** Uses `faster-whisper` for fast and private transcription.
 -   **Automatic Pasting:** Transcribed text is automatically pasted into your current application.
--   **System Tray Integration:** Runs discreetly in your system tray.
--   **Configurable Settings:** Change the model size, hotkey, and more.
+-   **Settings Window:** Adjust model size, hotkey, and behavior.
+-   **Sound Cues:** Optional chime on recording start/stop.
 
 ## Setup and Installation
 
@@ -35,21 +35,22 @@ This application is a cross-platform desktop tool that allows you to record your
     ```bash
     python main.py
     ```
-3.  The application icon will appear in your system tray.
+3.  The settings window will appear.
 
 ## How to Use
 
-1.  Press the global hotkey (default: `Ctrl+Shift+V`) to start recording. You will see a red border overlay on your screen.
+1.  Press the global hotkey (default: `Ctrl+Shift+V`) to start recording. You will see a red border overlay on your screen and hear a soft chime (optional).
 2.  Press the hotkey again to stop recording.
 3.  The recorded audio will be transcribed, and the text will be pasted into the currently active window.
 
 ## Settings
 
-Right-click the system tray icon and select "Settings" to open the settings window. You can configure:
+Use the settings window to configure:
 
 -   **Whisper Model:** The size of the model to use. Smaller models are faster but less accurate.
 -   **Global Hotkey:** The key combination to trigger recording. The format for `pynput` should be used (e.g., `<ctrl>+<shift>+v`).
 -   **Auto-paste:** Toggle whether to paste the text automatically or just copy it to the clipboard.
+-   **Sound Cues:** Toggle the start/stop chime.
 -   **Language:** The language of the transcription (e.g., 'en', 'es'). Leave blank for auto-detection.
 
 **Important:** You will need to restart the application for changes to the hotkey and model to take effect. The "Save and Restart" button will do this for you.
