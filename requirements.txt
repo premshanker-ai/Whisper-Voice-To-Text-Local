@@ -1,0 +1,8 @@
+pynput
+pyperclip
+pyaudio
+faster-whisper
+torch
+numpy
+webrtcvad-wheels
+pillow
