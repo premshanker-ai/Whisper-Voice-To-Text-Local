@@ -62,6 +62,13 @@ class SettingsWindow(tk.Tk):
         self._init_styles()
         self._build_ui(current_settings)
 
+    def _toggle_ai_fields(self):
+        state = "normal" if self.ai_enabled_var.get() else "disabled"
+        bg = self._colors["entry"] if self.ai_enabled_var.get() else self._colors["bg"]
+        
+        self.model_entry.configure(state=state, bg=bg)
+        self.system_prompt_text.configure(state=state, bg=bg)
+
     def _set_icon(self):
         icon_path = os.path.join(os.getcwd(), "icon.png")
         if os.path.exists(icon_path):
@@ -279,6 +286,81 @@ class SettingsWindow(tk.Tk):
         )
         lang_entry.pack(fill="x", pady=(6, 0), ipady=6)
 
+        self._section_label("AI ASSISTANT", parent=content).pack(fill="x", padx=pad_x, pady=(12, 6))
+        ai_card = self._card(parent=content)
+        ai_card.pack(fill="x", padx=pad_x)
+        ai_body = tk.Frame(ai_card, bg=self._colors["card"])
+        ai_body.pack(fill="x", padx=12, pady=12)
+
+        # AI Toggle
+        self.ai_enabled_var = tk.BooleanVar(
+            value=current_settings.get("ai_enabled", False)
+        )
+        ai_toggle = tk.Checkbutton(
+            ai_body,
+            text="Enable AI Post-Processing (Ollama)",
+            variable=self.ai_enabled_var,
+            fg=self._colors["text"],
+            bg=self._colors["card"],
+            activebackground=self._colors["card"],
+            selectcolor=self._colors["card"],
+            command=self._toggle_ai_fields
+        )
+        ai_toggle.pack(anchor="w", pady=(0, 10))
+
+        # Model Name
+        tk.Label(
+            ai_body,
+            text="Ollama Model Name",
+            fg=self._colors["text"],
+            bg=self._colors["card"],
+            font=("Segoe UI", 10, "bold")
+        ).pack(anchor="w")
+        
+        self.model_name_var = tk.StringVar(
+            value=current_settings.get("ai_model", "llama3")
+        )
+        self.model_entry = tk.Entry(
+            ai_body,
+            textvariable=self.model_name_var,
+            fg=self._colors["text"],
+            bg=self._colors["entry"],
+            insertbackground=self._colors["text"],
+            relief="flat",
+            highlightthickness=1,
+            highlightbackground=self._colors["border"],
+            highlightcolor=self._colors["accent"]
+        )
+        self.model_entry.pack(fill="x", pady=(6, 10), ipady=6)
+
+        # System Prompt
+        tk.Label(
+            ai_body,
+            text="System Prompt / Instructions",
+            fg=self._colors["text"],
+            bg=self._colors["card"],
+            font=("Segoe UI", 10, "bold")
+        ).pack(anchor="w")
+
+        self.system_prompt_text = tk.Text(
+            ai_body,
+            height=4,
+            fg=self._colors["text"],
+            bg=self._colors["entry"],
+            insertbackground=self._colors["text"],
+            relief="flat",
+            highlightthickness=1,
+            highlightbackground=self._colors["border"],
+            highlightcolor=self._colors["accent"],
+            font=("Segoe UI", 9)
+        )
+        self.system_prompt_text.insert("1.0", current_settings.get("ai_system_prompt", "Fix grammar and formatting."))
+        self.system_prompt_text.pack(fill="x", pady=(6, 0))
+
+        # Helper method to enable/disable fields
+        self.ai_fields = [self.model_entry, self.system_prompt_text]
+        self._toggle_ai_fields()
+
         footer = tk.Label(
             content,
             text="Hotkey and model changes take effect after restart.",
@@ -357,7 +439,10 @@ class SettingsWindow(tk.Tk):
             "hotkey": self.hotkey_var.get(),
             "auto_paste": self.auto_paste_var.get(),
             "play_sounds": self.sound_var.get(),
-            "language": language
+            "language": language,
+            "ai_enabled": self.ai_enabled_var.get(),
+            "ai_model": self.model_name_var.get(),
+            "ai_system_prompt": self.system_prompt_text.get("1.0", "end-1c").strip()
         }
 
     def save_settings(self):

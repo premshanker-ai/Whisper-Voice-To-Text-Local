@@ -34,7 +34,7 @@ class Worker(threading.Thread):
         try:
             text = self.transcriber.transcribe(self.audio_path, self.language)
         except Exception as exc:
-            print(f"Error during transcription: {exc}")
+            print(f"Error during processing: {exc}")
             text = ""
         self.on_done(text)
 
@@ -53,6 +53,7 @@ class SuperWhisperApp:
 
         self.recorder = AudioRecorder()
         self.transcriber = None
+        self.ai_engine = AIEngine()
         self.indicator = RecordingIndicator(self.settings_window)
 
         self.is_recording = False
@@ -163,6 +164,12 @@ class SuperWhisperApp:
             self.transcriber,
             audio_file,
             self.settings.get("language"),
+            self.ai_engine,
+            {
+                "ai_enabled": self.settings.get("ai_enabled"),
+                "ai_system_prompt": self.settings.get("ai_system_prompt"),
+                "ai_model": self.settings.get("ai_model")
+            },
             self._on_worker_done
         )
         self.worker.start()
